@@ -40,16 +40,18 @@ const getWrappedComponentWithForwardRef = memoize(Comp =>
 function FormBuilderField(props) {
   const { field, meta, form } = props
 
+  // --- MR, 08/12/2021: Add *dangerous* support for HTML in labels :D
+
   const label = field.tooltip ? (
     <span>
-      {field.label}
+      <span dangerouslySetInnerHTML={{__html: field.label}} />
       <Tooltip title={field.tooltip}>
         {' '}
         <QuestionIcon />
       </Tooltip>
     </span>
   ) : (
-    field.label
+    <span dangerouslySetInnerHTML={{__html: field.label}} />
   )
 
   let formItemLayout =
@@ -60,7 +62,9 @@ function FormBuilderField(props) {
       wrapperCol: { span: formItemLayout[1] },
     }
   }
+
   const isFieldViewMode = meta.viewMode || field.viewMode || field.readOnly
+
   const formItemProps = {
     key: field.key,
     colon: meta.colon,
@@ -77,7 +81,6 @@ function FormBuilderField(props) {
       'validateStatus',
       'hasFeedback',
     ]),
-
     ...field.formItemProps,
     className: `${
       meta.viewMode ? 'ant-form-item-view-mode' + (isV4 ? ' ant-form-item-view-mode-v4' : '') : ''
@@ -96,6 +99,7 @@ function FormBuilderField(props) {
   if (field.label && typeof field.label === 'string') {
     formItemProps['data-label'] = field.label // help e2e test
   }
+
   if (field.colSpan && formItemProps.labelCol && !field.formItemLayout) {
     const labelCol = Math.round(formItemProps.labelCol.span / field.colSpan)
     Object.assign(formItemProps, {
@@ -113,8 +117,9 @@ function FormBuilderField(props) {
     })
   }
 
-  let initialValue
   const initialValues = meta.initialValues || {}
+  let initialValue
+
   if (has(field, 'initialValue')) {
     initialValue = field.initialValue
   } else if (field.getInitialValue) {
@@ -128,6 +133,7 @@ function FormBuilderField(props) {
   if (field.required) {
     rules.unshift({ required: true, message: field.message || field.requiredMessage || undefined })
   }
+
   const fieldProps = {
     initialValue,
     preserve: meta.preserve,

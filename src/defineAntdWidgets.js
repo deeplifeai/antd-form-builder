@@ -33,6 +33,9 @@ FormBuilder.defineWidget('textarea', Input.TextArea)
 FormBuilder.defineWidget('number', InputNumber)
 FormBuilder.defineWidget('date-picker', DatePicker)
 FormBuilder.defineWidget('radio', Radio)
+
+// --- MR, 08/12/2021: Add *dangerous* support for HTML in labels :D
+
 FormBuilder.defineWidget('radio-group', Radio.Group, field => {
   const RadioComp = field.buttonGroup ? Radio.Button : Radio
   if (field.options && !field.children) {
@@ -44,7 +47,7 @@ FormBuilder.defineWidget('radio-group', Radio.Group, field => {
       },
       children: mapOptions(field.options).map(opt => (
         <RadioComp value={opt.value} key={opt.value}>
-          {opt.label}
+          <span dangerouslySetInnerHTML={{__html: opt.label}} />
         </RadioComp>
       )),
     }
@@ -58,13 +61,14 @@ FormBuilder.defineWidget('checkbox-group', Checkbox.Group, field => {
       ...field,
       children: mapOptions(field.options).map(opt => (
         <Checkbox value={opt.value} key={opt.value}>
-          {opt.label}
+          <span dangerouslySetInnerHTML={{__html: opt.label}} />
         </Checkbox>
       )),
     }
   }
   return field
 })
+
 FormBuilder.defineWidget('select', Select, field => {
   if (field.options && !field.children) {
     return {

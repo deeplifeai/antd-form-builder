@@ -18,7 +18,7 @@ function getWidget(widget) {
   if (typeof widget === 'string') {
     if (!widgetMap[widget] || !widgetMap[widget].widget) {
       throw new Error(
-        `Widget '${widget}' not found, did you defined it by FormBuilder.defineComponent?`,
+        `Widget '${widget}' not found, did you define it by FormBuilder.defineComponent?`,
       )
     }
     return widgetMap[widget].widget
